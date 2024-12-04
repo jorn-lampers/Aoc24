@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.IO;
 
 
@@ -7,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-Day3p2();
+Day4p1();
 
 void Day1()
 {
@@ -77,6 +78,79 @@ void Day3p2() {
   }
 
   Console.WriteLine($"Sum of products: {total}");
+}
+
+void Day4p1()
+{
+    string[] input = File.ReadAllLines("input4");
+
+    string wordToFind = "XMAS";
+
+    // Find the word in wordToFind in any direction in the input grid
+    int count = 0;
+
+    for (int i = 0; i < input.Length; i++)
+    {
+        for (int j = 0; j < input[i].Length; j++)
+        {
+            count += FindWordCountFromPos(wordToFind, input, i, j);
+        }
+    }
+
+    Console.WriteLine($"Found the word {wordToFind} {count} times");
+
+}
+
+int FindWordCountFromPos(string wordToFind, string[] input, int x, int y)
+{
+    int count = 0;
+    string reverseWord = new string(wordToFind.Reverse().ToArray());
+
+    if (FindWordFromPosInDir(wordToFind, input, x, y, 0, 1))
+        count++;
+
+    if (FindWordFromPosInDir(reverseWord, input, x, y, 0, 1))
+        count++;
+
+    if (FindWordFromPosInDir(wordToFind, input, x, y, 1, 0))
+        count++;
+
+    if (FindWordFromPosInDir(reverseWord, input, x, y, 1, 0))
+        count++;
+
+    if (FindWordFromPosInDir(wordToFind, input, x, y, 1, 1))
+        count++;
+
+    if (FindWordFromPosInDir(reverseWord, input, x, y, 1, 1))
+        count++;
+
+    if (FindWordFromPosInDir(wordToFind, input, x, y, 1, -1))
+        count++;
+
+    if (FindWordFromPosInDir(reverseWord, input, x, y, 1, -1))
+        count++;
+
+    return count;
+}
+
+bool FindWordFromPosInDir(string wordToFind, string[] input, int startX, int startY, int dirX, int dirY)
+{
+    int offset = 0;
+    foreach(var c in wordToFind)
+    {
+        int posX = startX + dirX * offset;
+        int posY = startY + dirY * offset;
+
+        if (posX < 0 || posY < 0 
+            || input.Length <= posY 
+            || input[1].Length <= posX 
+            || input[posY][posX] != c) 
+            return false;
+
+        offset++;
+    }
+
+    return true;
 }
 
 string FindDoParts(string input) {
