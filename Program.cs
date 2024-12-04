@@ -5,8 +5,9 @@ using System.IO;
 
 // Using linq
 using System.Linq;
+using System.Text.RegularExpressions;
 
-Day2P2();
+Day3p2();
 
 void Day1()
 {
@@ -37,12 +38,75 @@ void Day1()
     {
         int amountOfOccurencesInRightList = rightList.Count(n => n == leftList[i]);
         int similarityScore = amountOfOccurencesInRightList * leftList[i];
-
         totalSimilarityScore += similarityScore;
     }
 
     Console.WriteLine($"Total similarity score: {totalSimilarityScore}");
 }
+
+void Day3p1() {
+  string input = File.ReadAllText("input3");
+
+  // regex match mul\(\d+,\d+\)
+  var regex = new Regex(@"mul\(\d+,\d+\)");
+  
+  var matches = regex.Matches(input);
+
+  int total = 0;
+  foreach (var match in matches)
+  {
+
+    total += ResolveMul(match.ToString());
+  }
+
+  Console.WriteLine($"Sum of products: {total}");
+}
+
+void Day3p2() {
+  string input = File.ReadAllText("input3");
+
+  string doParts = FindDoParts(input);
+
+  var regex = new Regex(@"mul\(\d+,\d+\)");
+  var matches = regex.Matches(doParts);
+
+  int total = 0;
+  foreach (var match in matches)
+  {
+    total += ResolveMul(match.ToString());
+  }
+
+  Console.WriteLine($"Sum of products: {total}");
+}
+
+string FindDoParts(string input) {
+
+  List<string> doParts = new List<string>();
+
+  int startIndex = 0;
+  while (startIndex != -1)
+  {
+    int endOfDo = input.IndexOf("don't()", startIndex);
+    if (endOfDo == -1)
+    {
+      endOfDo = input.Length;
+    }
+
+    doParts.Add(input.Substring(startIndex, endOfDo - startIndex));
+
+    startIndex = input.IndexOf("do(", endOfDo);
+  }
+
+  return doParts.Aggregate((a, b) => a + b);
+}
+
+int ResolveMul(string input) {
+  int n1 = int.Parse(input.Split(",")[0].Replace("mul(", ""));
+  int n2 = int.Parse(input.Split(",")[1].Replace(")", ""));
+
+  return n1 * n2;
+}
+
 
 void Day2()
 {
