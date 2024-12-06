@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-Day3p2();
+Day4Pt2();
 
 void Day1() {
   string[] lines = File.ReadAllLines("input1");
@@ -102,4 +102,38 @@ int ResolveMul(string input) {
   int n2 = int.Parse(input.Split(",")[1].Replace(")", ""));
 
   return n1 * n2;
+}
+
+void Day4Pt2() {
+  string[] input = File.ReadAllLines("input4");
+
+  int width = input[0].Length;
+  int height = input.Length;
+
+  int xMasCount = 0;
+  for (int x = 1; x < width - 1; x++)
+  {
+    for (int y = 1; y < height - 1; y++)
+    {
+      if (input[y][x] == 'A')
+      {
+        char[] lineA = {
+          input[y - 1][x - 1], 
+          input[y + 1][x + 1]
+        };
+        
+        char[] lineB = {
+          input[y + 1][x - 1], 
+          input[y - 1][x + 1]
+        };
+
+        if (lineA.Contains('M') && lineA.Contains('S') 
+            && lineB.Contains('M') && lineB.Contains('S'))
+          xMasCount++;
+
+      }
+    }
+  }
+
+  Console.WriteLine($"XMAS count: {xMasCount}");
 }

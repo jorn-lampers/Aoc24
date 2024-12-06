@@ -26,3 +26,4 @@
 /Users/jornlampers/Source/Aoc24/obj/Debug/net8.0/AOC24.pdb
 /Users/jornlampers/Source/Aoc24/obj/Debug/net8.0/AOC24.genruntimeconfig.cache
 /Users/jornlampers/Source/Aoc24/obj/Debug/net8.0/ref/AOC24.dll
+/Users/jornlampers/Source/Aoc24/obj/Debug/net8.0/AOC24.sourcelink.json
