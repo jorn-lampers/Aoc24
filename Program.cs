@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AOC24;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
@@ -8,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-Day5p2();
+new Day6().Run();
 
 void Day1()
 {
