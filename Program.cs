@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-Day4p1();
+Day5p2();
 
 void Day1()
 {
@@ -99,6 +99,140 @@ void Day4p1()
 
     Console.WriteLine($"Found the word {wordToFind} {count} times");
 
+}
+
+void Day5p1()
+{
+    string[] input = File.ReadAllLines("input5");
+
+    int[][] rules = input
+        .TakeWhile(l => l != "")
+        .Select(s => s.Split("|")
+            .Select(d => int.Parse(d))
+            .ToArray())
+        .ToArray();
+
+    int[][] pages = input
+        .SkipWhile(l => l != "")
+        .Skip(1)
+        .Select(s => s.Split(",")
+            .Select(d => int.Parse(d))
+            .ToArray())
+        .ToArray();
+
+    int[][] validPages = pages
+        .Where(p => IsPageNumbersValid(rules, p))
+        .ToArray();
+
+    int middlePageSum = validPages
+        .Select(p => GetMiddlePageNumber(p))
+        .Sum();
+
+    Console.WriteLine($"Middle page sum: {middlePageSum}");
+
+}
+
+void Day5p2()
+{
+    string[] input = File.ReadAllLines("input5");
+
+    int[][] rules = input
+        .TakeWhile(l => l != "")
+        .Select(s => s.Split("|")
+            .Select(d => int.Parse(d))
+            .ToArray())
+        .ToArray();
+
+    int[][] pages = input
+        .SkipWhile(l => l != "")
+        .Skip(1)
+        .Select(s => s.Split(",")
+            .Select(d => int.Parse(d))
+            .ToArray())
+        .ToArray();
+
+    int[][] invalidPages = pages
+        .Where(p => !IsPageNumbersValid(rules, p))
+        .ToArray();
+
+    int[][] fixedInvalidPages = invalidPages
+        .Select(p => FixInvalidPage(rules, p))
+        .ToArray();
+
+    int middlePageSum = fixedInvalidPages
+        .Select(p => GetMiddlePageNumber(p))
+        .Sum();
+
+    // 5914 too high
+    Console.WriteLine($"Middle page sum: {middlePageSum}");
+}
+
+int[] FixInvalidPage(int[][] rules, int[] pageNumbers)
+{
+    int[] fixedPageNumbers = new int[pageNumbers.Length];
+    pageNumbers.CopyTo(fixedPageNumbers, 0);
+
+    bool correctionMade = false;
+
+    foreach (var rule in rules)
+    {
+        if (!ValidateRule(rule, pageNumbers))
+        {
+            int precedingNum = rule[0];
+            int followingNum = rule[1];
+
+            int precedingIndex = Array.IndexOf(pageNumbers, precedingNum);
+            int followingIndex = Array.IndexOf(pageNumbers, followingNum);
+
+            if (precedingIndex > followingIndex)
+            {
+                int temp = pageNumbers[precedingIndex];
+                pageNumbers[precedingIndex] = pageNumbers[followingIndex];
+                pageNumbers[followingIndex] = temp;
+            }
+
+            correctionMade = true;
+            break;
+        }
+    }
+
+    return correctionMade ? FixInvalidPage(rules, pageNumbers) : fixedPageNumbers;
+}
+
+bool IsPageNumbersValid(int[][] rules, int[] pageNumbers)
+{
+    foreach (var rule in rules)
+    {
+        if (!ValidateRule(rule, pageNumbers))
+            return false;
+    }
+    
+    return true;
+}
+
+bool ValidateRule(int[] rule, int[] pageNumbers)
+{
+    int precedingNum = rule[0];
+    int followingNum = rule[1];
+
+    int precedingIndex = Array.IndexOf(pageNumbers, precedingNum);
+    int followingIndex = Array.IndexOf(pageNumbers, followingNum);
+
+    if (precedingIndex == -1 || followingIndex == -1)
+        return true;
+
+    if (precedingIndex > followingIndex)
+        return false;
+
+    return true;
+} 
+
+int GetMiddlePageNumber(int[] pageNumbers)
+{
+    int middleIndex = pageNumbers.Length / 2;
+    int middlePage = pageNumbers[middleIndex];
+
+    return middlePage;
 }
 
 int FindWordCountFromPos(string wordToFind, string[] input, int x, int y)
