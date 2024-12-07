@@ -1,13 +1,9 @@
-public class Day7 {
+public class Day7 : Day {
 
-  public string[] Input;
   public Equation[] Equations;
 
-  public Day7()
+  public Day7() : base(7)
   {
-    // Load input
-    Input = System.IO.File.ReadAllLines("input7");
-
     Equations = Input
       .Select(x => new Equation(x))
       .ToArray();
@@ -23,7 +19,7 @@ public class Day7 {
 
   }
 
-  public long Part1()
+  public override object Part1()
   {
     long answer = Equations
       .Where(x => x.TestValidity())
@@ -32,7 +28,7 @@ public class Day7 {
     return answer;
   }
 
-  public long Part2()
+  public override object Part2()
   {
     long answer = Equations
       .Where(x => x.TestValidityP2())
@@ -74,13 +70,16 @@ public class Day7 {
           // Get j'th digit of i as a binary number, this will determine the operator to use
           int op = i / (int)Math.Pow(2, j) % 2;
 
-          if (op == 0)
+          switch(op)
           {
-            value += operand;
-          }
-          else
-          {
-            value *= operand;
+            case 0:
+              value += operand;
+              break;
+            case 1:
+              value *= operand;
+              break;
+            default:
+              throw new Exception("Invalid operator");
           }
         }
 
