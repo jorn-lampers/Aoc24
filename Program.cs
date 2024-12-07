@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-new Day6().Run();
+new Day7().Run();
 
 void Day1()
 {
